@@ -1,0 +1,692 @@
+{
+  "name": "My workflow 6",
+  "nodes": [
+    {
+      "parameters": {
+        "mode": "insert",
+        "memoryKey": {
+          "__rl": true,
+          "value": "KOKO",
+          "mode": "list"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        -256
+      ],
+      "id": "0d2cf65a-e006-4ea3-a384-69e34f3f5296",
+      "name": "Simple Vector Store"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -608,
+        -32
+      ],
+      "id": "3a041a2d-9411-41a0-a5e3-81e0e21a914b",
+      "name": "Embeddings Google Gemini",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "trc8vh5EZbK3XpuM",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "dataType": "binary",
+        "textSplittingMode": "custom",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.documentDefaultDataLoader",
+      "typeVersion": 1.1,
+      "position": [
+        -368,
+        -64
+      ],
+      "id": "3ee32d53-29fb-4c52-aea3-d21fe51a286f",
+      "name": "Default Data Loader"
+    },
+    {
+      "parameters": {
+        "mode": "retrieve-as-tool",
+        "toolDescription": "Search the knowledge base for travel packages, prices, policies, and activities...",
+        "memoryKey": {
+          "__rl": true,
+          "value": "KOKO",
+          "mode": "list",
+          "cachedResultName": "KOKO"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.vectorStoreInMemory",
+      "typeVersion": 1.3,
+      "position": [
+        -576,
+        -640
+      ],
+      "id": "22eb4838-7239-4102-b321-191a8466e4a0",
+      "name": "knowledge_search"
+    },
+    {
+      "parameters": {},
+      "type": "@n8n/n8n-nodes-langchain.embeddingsGoogleGemini",
+      "typeVersion": 1,
+      "position": [
+        -576,
+        -480
+      ],
+      "id": "d281172f-a8d0-4c02-b3b8-26e093ed23fc",
+      "name": "Embeddings Google Gemini1",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "trc8vh5EZbK3XpuM",
+          "name": "Google Gemini(PaLM) Api account 3"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "19hYL5vA1Y06tORNa062pRsVGBdISy85Y0aCU7ZOo8wk",
+          "mode": "list",
+          "cachedResultName": "bdagent",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19hYL5vA1Y06tORNa062pRsVGBdISy85Y0aCU7ZOo8wk/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Feuille 1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/19hYL5vA1Y06tORNa062pRsVGBdISy85Y0aCU7ZOo8wk/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Name', ``, 'string') }}",
+            "Email": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Email', ``, 'string') }}",
+            "Phone": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Phone', ``, 'string') }}",
+            "Activity name": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Activity_name', ``, 'string') }}",
+            "Booking date": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Booking_date', ``, 'string') }}",
+            "Duration": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Duration', ``, 'string') }}"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Name",
+              "displayName": "Name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Email",
+              "displayName": "Email",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Phone",
+              "displayName": "Phone",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Activity name",
+              "displayName": "Activity name",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Booking date",
+              "displayName": "Booking date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Duration",
+              "displayName": "Duration",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheetsTool",
+      "typeVersion": 4.7,
+      "position": [
+        32,
+        -656
+      ],
+      "id": "5168b237-0593-4157-b642-f0d0df2c8707",
+      "name": "save_booking_request",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "lMZSgSaBfVYRY438",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "updates": [
+          "messages"
+        ],
+        "options": {}
+      },
+      "type": "n8n-nodes-base.whatsAppTrigger",
+      "typeVersion": 1,
+      "position": [
+        -864,
+        -944
+      ],
+      "id": "2fe5203a-23ab-4cd0-b57c-a4029f6ba96a",
+      "name": "WhatsApp Trigger",
+      "webhookId": "55d7d411-b966-48a6-abab-897fa194c6c8",
+      "credentials": {
+        "whatsAppTriggerApi": {
+          "id": "oo6uaYF4yUj0uOmF",
+          "name": "WhatsApp OAuth account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "send",
+        "phoneNumberId": "940632442460509",
+        "recipientPhoneNumber": "={{ $('WhatsApp Trigger').item.json.messages[0].from }}",
+        "textBody": "={{ $json.output }}",
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.whatsApp",
+      "typeVersion": 1,
+      "position": [
+        32,
+        -928
+      ],
+      "id": "38416e00-6191-4b83-81c4-f8abe63a4ae2",
+      "name": "Send message",
+      "webhookId": "95034c24-f419-4826-b909-166f86b4901b",
+      "credentials": {
+        "whatsAppApi": {
+          "id": "wc2rerfl27D78MKw",
+          "name": "WhatsApp account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.messages[0].from }}",
+        "contextWindowLength": 8
+      },
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [
+        -832,
+        -576
+      ],
+      "id": "12af4f2c-7627-4be2-bdec-3603794f4658",
+      "name": "Simple Memory"
+    },
+    {
+      "parameters": {
+        "chunkSize": 400,
+        "chunkOverlap": 40
+      },
+      "type": "@n8n/n8n-nodes-langchain.textSplitterTokenSplitter",
+      "typeVersion": 1,
+      "position": [
+        -400,
+        112
+      ],
+      "id": "ea6c297e-87fd-47fb-8e97-011abfa97ea5",
+      "name": "Token Splitter"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('To', ``, 'string') }}",
+        "subject": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Subject', ``, 'string') }}",
+        "emailType": "text",
+        "message": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Message', ``, 'string') }}",
+        "options": {
+          "appendAttribution": false
+        }
+      },
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        -640
+      ],
+      "id": "63354d17-3b01-4431-be4c-dff7ac821069",
+      "name": "Confirmation Gmail",
+      "webhookId": "61d91433-bd34-4e74-bb75-71b1bd0aaaaa",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MMyuIjry20ChHNZT",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "calendar": {
+          "__rl": true,
+          "value": "fadf17a514bfef4beb729058730ece870802c4c285c635a199a090794d71c8bd@group.calendar.google.com",
+          "mode": "list",
+          "cachedResultName": "agent"
+        },
+        "start": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Start', ``, 'string') }}",
+        "end": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('End', ``, 'string') }}",
+        "additionalFields": {
+          "description": "={{ /*n8n-auto-generated-fromAI-override*/ $fromAI('Description', ``, 'string') }}"
+        }
+      },
+      "type": "n8n-nodes-base.googleCalendarTool",
+      "typeVersion": 1.3,
+      "position": [
+        240,
+        -640
+      ],
+      "id": "6194579c-9b3c-4da7-b27f-998fb81f1745",
+      "name": "Calendar",
+      "credentials": {
+        "googleCalendarOAuth2Api": {
+          "id": "GUbQdKaP510h96ft",
+          "name": "Google Calendar account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyMinute"
+            }
+          ]
+        },
+        "triggerOn": "specificFile",
+        "fileToWatch": {
+          "__rl": true,
+          "value": "1DY45OQSR7ZZTDUIKPMGTgQf6SNsRhCrnmlbmhSBaXbs",
+          "mode": "list",
+          "cachedResultName": "MASTER KNOWLEDGE BASE: KENZ RABAT TOURISM",
+          "cachedResultUrl": "https://docs.google.com/document/d/1DY45OQSR7ZZTDUIKPMGTgQf6SNsRhCrnmlbmhSBaXbs/edit?usp=drivesdk"
+        }
+      },
+      "type": "n8n-nodes-base.googleDriveTrigger",
+      "typeVersion": 1,
+      "position": [
+        -880,
+        -224
+      ],
+      "id": "ea7478ae-7877-41b7-a440-274fc77dacd2",
+      "name": "Google Drive Trigger",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pJPfQ9WQ1QwwRGNw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "download",
+        "fileId": {
+          "__rl": true,
+          "value": "1DY45OQSR7ZZTDUIKPMGTgQf6SNsRhCrnmlbmhSBaXbs",
+          "mode": "list",
+          "cachedResultName": "MASTER KNOWLEDGE BASE: KENZ RABAT TOURISM",
+          "cachedResultUrl": "https://docs.google.com/document/d/1DY45OQSR7ZZTDUIKPMGTgQf6SNsRhCrnmlbmhSBaXbs/edit?usp=drivesdk"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        -608,
+        -256
+      ],
+      "id": "df9eaa6a-aac7-4283-b12d-374ff45f02bb",
+      "name": "Download file",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "pJPfQ9WQ1QwwRGNw",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.messages[0].text.body }}",
+        "options": {
+          "systemMessage": "=\n\n# IDENTITY & PERSONA\nYou are **Karim**, the lead virtual concierge for \"Asfar Ahlam\" (Dreams Travel). You are not just a chatbot; you are a world-class travel advisor known for your warmth, efficiency, and proactive sales skills.\n\n**Your Characteristics:**\n* **Tone:** Professional, welcoming, and persuasive. You speak with the elegance of a luxury hotel concierge.\n* **Language:** You are a polyglot chameleon. You MUST detect the user's language (English, Arabic, French, Darija, etc.) and respond in the EXACT same language and dialect.\n* **Mission:** To inspire travelers with our specific packages AND help them find the best flight deals to convert inquiries into bookings.\n\n---\n\n# TOOLS & CAPABILITIES\nYou have access to specific tools. Use them strategically:\n1.  `knowledge_search`: Use to find \"Asfar Ahlam\" package details and PRICES (e.g., Sahara Trip, City Tours).\n2.  `get_flight_prices`: Use to find **Real-Time Flight Tickets** (Google Flights).\n3.  `save_booking_request`: Use **ONLY** when the Booking Form is 100% complete (6/6 items).\n4.  `Calendar`: Use **IMMEDIATELY** after a successful `save_booking_request`.\n5.  `Confirmation Gmail`: Use **ONLY** after the booking is successfully saved and added to the calendar.\n\n---\n\n# MEMORY & CONTEXT PROTOCOL\nBefore generating ANY response, you must execute a **Silent Context Check**:\n1.  Scan the `chat_history`.\n2.  Identify what information the user has *already* provided.\n3.  **NEVER** ask for information that is already known.\n4.  Address the user by name as soon as you know it.\n\n---\n\n# OPERATING RULES (The \"Brain\")\n\n### 1. The Warm Welcome (First Contact)\n* **Trigger:** The user sends a simple greeting (e.g., \"Salam\", \"Hello\", \"Bonjour\") WITHOUT specific details.\n* **Action:**\n    1.  Reply with a warm, elegant greeting in the SAME language.\n    2.  Introduce yourself briefly (\"I am Karim, your personal travel advisor...\").\n    3.  Ask an open question: \"How may I assist you today? Are you looking for a specific package or a flight ticket?\"\n* **Constraint:** Do **NOT** call any tools yet.\n\n### 2. FLIGHT SEARCH PROTOCOL (New Capability) ✈️\n* **Trigger:** The user asks for a flight, ticket, or \"vol\" (e.g., \"bghit nemchi l Paris\", \"Flight to Dubai\").\n* **Inputs Required for `get_flight_prices`:**\n    * **origin**: Convert city to 3-letter IATA code (e.g., Casablanca -> CMN).\n    * **destination**: Convert city to 3-letter IATA code (e.g., Paris -> CDG).\n    * **date**: YYYY-MM-DD format.\n    * **return_date**: (Optional) YYYY-MM-DD. **ONLY** include this if the user asks for a Round-Trip (Aller-Retour). If One-Way, leave this empty (null).\n* **Behavior:**\n    * If dates are missing, ask for them politely.\n    * If the user says \"Next Friday\", calculate the date based on `Current Date` above.\n    *"
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        -480,
+        -944
+      ],
+      "id": "d6f61964-dbb9-4815-933a-3936e8cb7c92",
+      "name": "AI Agent",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "model": "deepseek/deepseek-r1",
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
+      "typeVersion": 1,
+      "position": [
+        -1088,
+        -624
+      ],
+      "id": "c1bf8b4f-8590-41b5-9709-862943734e66",
+      "name": "OpenRouter Chat Model",
+      "credentials": {
+        "openRouterApi": {
+          "id": "SmgmkO57Rnb4eTAg",
+          "name": "OpenRouter account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "description": "\"Use this tool to find flight prices. You MUST provide the following inputs: 'origin' (IATA code, e.g., CMN), 'destination' (IATA code, e.g., DXB), and 'date' (YYYY-MM-DD).\"",
+        "workflowId": {
+          "__rl": true,
+          "value": "AaPooTLdP6Ey3vMe",
+          "mode": "list",
+          "cachedResultUrl": "/workflow/AaPooTLdP6Ey3vMe",
+          "cachedResultName": "Tool_Get_Flights"
+        },
+        "workflowInputs": {
+          "mappingMode": "defineBelow",
+          "value": {},
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "origin",
+              "displayName": "origin",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "destination",
+              "displayName": "destination",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            },
+            {
+              "id": "date",
+              "displayName": "date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.toolWorkflow",
+      "typeVersion": 2.2,
+      "position": [
+        -336,
+        -512
+      ],
+      "id": "bf82be8e-b53b-4035-8b52-dea87fd86082",
+      "name": "Call 'Tool_Get_Flights'"
+    }
+  ],
+  "pinData": {
+    "WhatsApp Trigger": [
+      {
+        "json": {
+          "messaging_product": "whatsapp",
+          "metadata": {
+            "display_phone_number": "15551589994",
+            "phone_number_id": "940632442460509"
+          },
+          "contacts": [
+            {
+              "profile": {
+                "name": "Kamal"
+              },
+              "wa_id": "212770180208"
+            }
+          ],
+          "messages": [
+            {
+              "from": "212770180208",
+              "id": "wamid.HBgMMjEyNzcwMTgwMjA4FQIAEhggQTVEMTY5QTBEMzNGQTIzRDg0QzRGQTI1QTAwRkE3NDMA",
+              "timestamp": "1765671642",
+              "text": {
+                "body": "Hi"
+              },
+              "type": "text"
+            }
+          ],
+          "field": "messages"
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Embeddings Google Gemini": {
+      "ai_embedding": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Default Data Loader": {
+      "ai_document": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "ai_document",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "knowledge_search": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Embeddings Google Gemini1": {
+      "ai_embedding": [
+        [
+          {
+            "node": "knowledge_search",
+            "type": "ai_embedding",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "save_booking_request": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "WhatsApp Trigger": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Simple Memory": {
+      "ai_memory": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_memory",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Token Splitter": {
+      "ai_textSplitter": [
+        [
+          {
+            "node": "Default Data Loader",
+            "type": "ai_textSplitter",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Confirmation Gmail": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calendar": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive Trigger": {
+      "main": [
+        [
+          {
+            "node": "Download file",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download file": {
+      "main": [
+        [
+          {
+            "node": "Simple Vector Store",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Send message",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Call 'Tool_Get_Flights'": {
+      "ai_tool": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "2e260086-051f-492a-9a58-2fa79b68ff78",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e46f983f534b77694bf07dc3ddfe71a2c345b4b36ed094149995e47734b0507d"
+  },
+  "id": "oBmS38M82bquJULS",
+  "tags": []
+}

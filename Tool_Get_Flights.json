@@ -1,0 +1,1120 @@
+{
+  "name": "Tool_Get_Flights",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "origin"
+            },
+            {
+              "name": "destination"
+            },
+            {
+              "name": "date"
+            },
+            {
+              "name": "returne date"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -432,
+        -32
+      ],
+      "id": "4644ede1-72e1-4bec-acbd-9d6bf0722143",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "jsCode": "// نتحققوا من النتائج (SerpApi كتعطي best_flights أو other_flights)\nconst flights = items[0].json.best_flights || items[0].json.other_flights || [];\nlet results = [];\n\n// إلا لقينا رحلات\nif (flights.length > 0) {\n  // ناخدو أول 5 رحلات فقط\n  for (let i = 0; i < Math.min(flights.length, 5); i++) {\n    let flight = flights[i];\n    \n    // استخراج المعلومات\n    let airline = flight.flights[0].airline; // اسم الشركة\n    let price = flight.price + \" MAD\"; // الثمن\n    let duration = (flight.total_duration / 60).toFixed(1) + \"h\"; // المدة بالسوايع\n    \n    // رابط الحجز (مهم جداً للزبون)\n    // SerpApi كتعطي رابط البحث العام، وهو أحسن حاجة نعطيوها للزبون يكمل فيه\n    let link = items[0].json.search_metadata.google_flights_url;\n\n    results.push({\n      json: {\n        option: i + 1,\n        airline: airline,\n        price: price,\n        duration: duration,\n        link: link\n      }\n    });\n  }\n} else {\n  // حالة عدم وجود رحلات\n  results.push({\n    json: {\n      message: \"نعتذر، لم يتم العثور على رحلات في هذا التاريخ. يرجى تجربة تاريخ آخر.\"\n    }\n  });\n}\n\nreturn results;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        80,
+        -32
+      ],
+      "id": "22f65135-0959-454b-b5f9-056908fed039",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "path": "0948b1a6-6ce8-4b2c-8580-30865d293a95",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -656,
+        -176
+      ],
+      "id": "2d3d5273-623f-4caa-9356-67fba709d7db",
+      "name": "Webhook",
+      "webhookId": "0948b1a6-6ce8-4b2c-8580-30865d293a95"
+    },
+    {
+      "parameters": {
+        "operation": "google_flights",
+        "departure_id": "={{ $json.origin }}",
+        "arrival_id": "={{ $json.destination }}",
+        "outbound_date": "={{ $json.date }}",
+        "return_date": "={{ $json.return_date }}",
+        "type": "={{ $json.return_date ? 1 : 2 }}",
+        "additionalFields": {},
+        "requestOptions": {}
+      },
+      "type": "n8n-nodes-serpapi.serpApi",
+      "typeVersion": 1,
+      "position": [
+        -176,
+        -32
+      ],
+      "id": "540ae8de-9847-420d-97f3-dd0e832dccaa",
+      "name": "Google_flights search",
+      "credentials": {
+        "serpApi": {
+          "id": "si7XLbPHuRJcKLN0",
+          "name": "SerpApi account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "When Executed by Another Workflow": [
+      {
+        "json": {
+          "origin": "CMN",
+          "destination": "DXB",
+          "date": "2025-12-25",
+          "return_date": "2026-01-05"
+        }
+      }
+    ],
+    "Google_flights search": [
+      {
+        "json": {
+          "search_metadata": {
+            "id": "693f3a3ef9656126528abe7b",
+            "status": "Success",
+            "json_endpoint": "https://serpapi.com/searches/8f919fe3adf6a9e7/693f3a3ef9656126528abe7b.json",
+            "created_at": "2025-12-14 22:29:18 UTC",
+            "processed_at": "2025-12-14 22:29:18 UTC",
+            "google_flights_url": "https://www.google.com/travel/flights?hl=en&gl=us&tfs=CBwQAhoeEgoyMDI1LTEyLTI1agcIARIDQ01OcgcIARIDRFhCGh4SCjIwMjYtMDEtMDVqBwgBEgNEWEJyBwgBEgNDTU5CAQFIAXABmAEB&tfu=EgIIAQ",
+            "raw_html_file": "https://serpapi.com/searches/8f919fe3adf6a9e7/693f3a3ef9656126528abe7b.html",
+            "prettify_html_file": "https://serpapi.com/searches/8f919fe3adf6a9e7/693f3a3ef9656126528abe7b.prettify",
+            "total_time_taken": 0.6
+          },
+          "search_parameters": {
+            "engine": "google_flights",
+            "hl": "en",
+            "gl": "us",
+            "type": "1",
+            "departure_id": "CMN",
+            "arrival_id": "DXB",
+            "outbound_date": "2025-12-25",
+            "return_date": "2026-01-05"
+          },
+          "best_flights": [
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 15:10"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 01:40"
+                  },
+                  "duration": 450,
+                  "airplane": "Airbus A380",
+                  "airline": "Emirates",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/EK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "EK 752",
+                  "ticket_also_sold_by": [
+                    "Royal Air Maroc"
+                  ],
+                  "legroom": "32 in",
+                  "extensions": [
+                    "Above average legroom (32 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 408 kg"
+                  ]
+                }
+              ],
+              "total_duration": 450,
+              "carbon_emissions": {
+                "this_flight": 408000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -13
+              },
+              "price": 858,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/EK.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ1ZGU3pjMU1ob0xDS2VlQlJBQ0dnTlZVMFE0SEhDbm5nVT0iLFtbIkNNTiIsIjIwMjUtMTItMjUiLCJEWEIiLG51bGwsIkVLIiwiNzUyIl1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 14:00"
+                  },
+                  "arrival_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-25 23:10"
+                  },
+                  "duration": 430,
+                  "airplane": "Boeing 787",
+                  "airline": "Royal Air Maroc",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AT.png",
+                  "travel_class": "Economy",
+                  "flight_number": "AT 216",
+                  "ticket_also_sold_by": [
+                    "Qatar Airways"
+                  ],
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 337 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-26 08:10"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 10:25"
+                  },
+                  "duration": 75,
+                  "airplane": "Airbus A350",
+                  "airline": "Qatar Airways",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+                  "travel_class": "Economy",
+                  "flight_number": "QR 1006",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 52 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 540,
+                  "name": "Hamad International Airport",
+                  "id": "DOH",
+                  "overnight": true
+                }
+              ],
+              "total_duration": 1045,
+              "carbon_emissions": {
+                "this_flight": 389000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -17
+              },
+              "price": 905,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3hCVkRJeE5ueFJVakV3TURZYUN3anF3Z1VRQWhvRFZWTkVPQnh3NnNJRiIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIkRPSCIsbnVsbCwiQVQiLCIyMTYiXSxbIkRPSCIsIjIwMjUtMTItMjYiLCJEWEIiLG51bGwsIlFSIiwiMTAwNiJdXV0="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 20:30"
+                  },
+                  "arrival_airport": {
+                    "name": "King Khalid International Airport",
+                    "id": "RUH",
+                    "time": "2025-12-26 04:55"
+                  },
+                  "duration": 385,
+                  "airplane": "Boeing 787",
+                  "airline": "Saudia",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+                  "travel_class": "Economy",
+                  "flight_number": "SV 374",
+                  "legroom": "32 in",
+                  "extensions": [
+                    "Above average legroom (32 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 319 kg"
+                  ],
+                  "overnight": true
+                },
+                {
+                  "departure_airport": {
+                    "name": "King Khalid International Airport",
+                    "id": "RUH",
+                    "time": "2025-12-26 09:05"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 12:00"
+                  },
+                  "duration": 115,
+                  "airplane": "Airbus A321",
+                  "airline": "Saudia",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+                  "travel_class": "Economy",
+                  "flight_number": "SV 596",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat USB outlet",
+                    "On-demand video",
+                    "Carbon emissions estimate: 114 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 250,
+                  "name": "King Khalid International Airport",
+                  "id": "RUH",
+                  "overnight": true
+                }
+              ],
+              "total_duration": 750,
+              "carbon_emissions": {
+                "this_flight": 434000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -8
+              },
+              "price": 931,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3RUVmpNM05IeFRWalU1TmhvTENKYlhCUkFDR2dOVlUwUTRISENXMXdVPSIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIlJVSCIsbnVsbCwiU1YiLCIzNzQiXSxbIlJVSCIsIjIwMjUtMTItMjYiLCJEWEIiLG51bGwsIlNWIiwiNTk2Il1dXQ=="
+            }
+          ],
+          "other_flights": [
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 16:45"
+                  },
+                  "arrival_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-25 23:25"
+                  },
+                  "duration": 280,
+                  "airplane": "Boeing 777",
+                  "airline": "Turkish Airlines",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "TK 618",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 270 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-26 07:55"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 13:30"
+                  },
+                  "duration": 275,
+                  "airplane": "Airbus A330",
+                  "airline": "Turkish Airlines",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "TK 764",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 225 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 510,
+                  "name": "Istanbul Airport",
+                  "id": "IST",
+                  "overnight": true
+                }
+              ],
+              "total_duration": 1065,
+              "carbon_emissions": {
+                "this_flight": 495000,
+                "typical_for_this_route": 470000,
+                "difference_percent": 5
+              },
+              "price": 1000,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3RVU3pZeE9IeFVTemMyTkJvTENPaU1CaEFDR2dOVlUwUTRISERvakFZPSIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIklTVCIsbnVsbCwiVEsiLCI2MTgiXSxbIklTVCIsIjIwMjUtMTItMjYiLCJEWEIiLG51bGwsIlRLIiwiNzY0Il1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 19:05"
+                  },
+                  "arrival_airport": {
+                    "name": "King Abdulaziz International Airport",
+                    "id": "JED",
+                    "time": "2025-12-26 03:05"
+                  },
+                  "duration": 360,
+                  "airplane": "Boeing 787",
+                  "airline": "Saudia",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+                  "travel_class": "Economy",
+                  "flight_number": "SV 378",
+                  "legroom": "32 in",
+                  "extensions": [
+                    "Above average legroom (32 in)",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 270 kg"
+                  ],
+                  "overnight": true
+                },
+                {
+                  "departure_airport": {
+                    "name": "King Abdulaziz International Airport",
+                    "id": "JED",
+                    "time": "2025-12-26 06:00"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 09:45"
+                  },
+                  "duration": 165,
+                  "airplane": "Airbus A321",
+                  "airline": "Saudia",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+                  "travel_class": "Economy",
+                  "flight_number": "SV 566",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat USB outlet",
+                    "On-demand video",
+                    "Carbon emissions estimate: 179 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 175,
+                  "name": "King Abdulaziz International Airport",
+                  "id": "JED",
+                  "overnight": true
+                }
+              ],
+              "total_duration": 700,
+              "carbon_emissions": {
+                "this_flight": 450000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -4
+              },
+              "price": 1013,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/SV.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3RUVmpNM09IeFRWalUyTmhvTENJU1hCaEFDR2dOVlUwUTRISENFbHdZPSIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIkpFRCIsbnVsbCwiU1YiLCIzNzgiXSxbIkpFRCIsIjIwMjUtMTItMjYiLCJEWEIiLG51bGwsIlNWIiwiNTY2Il1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 15:30"
+                  },
+                  "arrival_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-26 00:25"
+                  },
+                  "duration": 415,
+                  "airplane": "Airbus A350",
+                  "airline": "Qatar Airways",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+                  "travel_class": "Economy",
+                  "flight_number": "QR 1398",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 388 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-26 08:10"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 10:25"
+                  },
+                  "duration": 75,
+                  "airplane": "Airbus A350",
+                  "airline": "Qatar Airways",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+                  "travel_class": "Economy",
+                  "flight_number": "QR 1006",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 52 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 465,
+                  "name": "Hamad International Airport",
+                  "id": "DOH",
+                  "overnight": true
+                }
+              ],
+              "total_duration": 955,
+              "carbon_emissions": {
+                "this_flight": 440000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -6
+              },
+              "price": 1015,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZzFSVWpFek9UaDhVVkl4TURBMkdnc0lzcGdHRUFJYUExVlRSRGdjY0xLWUJnPT0iLFtbIkNNTiIsIjIwMjUtMTItMjUiLCJET0giLG51bGwsIlFSIiwiMTM5OCJdLFsiRE9IIiwiMjAyNS0xMi0yNiIsIkRYQiIsbnVsbCwiUVIiLCIxMDA2Il1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 09:55"
+                  },
+                  "arrival_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-25 16:40"
+                  },
+                  "duration": 285,
+                  "airplane": "Boeing 737",
+                  "airline": "Royal Air Maroc",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/AT.png",
+                  "travel_class": "Economy",
+                  "flight_number": "AT 910",
+                  "ticket_also_sold_by": [
+                    "Turkish Airlines"
+                  ],
+                  "legroom": "32 in",
+                  "extensions": [
+                    "Above average legroom (32 in)",
+                    "Carbon emissions estimate: 282 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-25 19:45"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 01:10"
+                  },
+                  "duration": 265,
+                  "airplane": "Airbus A330",
+                  "airline": "Turkish Airlines",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "TK 760",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 225 kg"
+                  ]
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 185,
+                  "name": "Istanbul Airport",
+                  "id": "IST"
+                }
+              ],
+              "total_duration": 735,
+              "carbon_emissions": {
+                "this_flight": 507000,
+                "typical_for_this_route": 470000,
+                "difference_percent": 8
+              },
+              "price": 1034,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/multi.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3RCVkRreE1IeFVTemMyTUJvTENOR25CaEFDR2dOVlUwUTRISERScHdZPSIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIklTVCIsbnVsbCwiQVQiLCI5MTAiXSxbIklTVCIsIjIwMjUtMTItMjUiLCJEWEIiLG51bGwsIlRLIiwiNzYwIl1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 16:45"
+                  },
+                  "arrival_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-25 23:25"
+                  },
+                  "duration": 280,
+                  "airplane": "Boeing 777",
+                  "airline": "Turkish Airlines",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "TK 618",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 270 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Istanbul Airport",
+                    "id": "IST",
+                    "time": "2025-12-26 01:30"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 06:50"
+                  },
+                  "duration": 260,
+                  "airplane": "Airbus A330",
+                  "airline": "Turkish Airlines",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+                  "travel_class": "Economy",
+                  "flight_number": "TK 762",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 225 kg"
+                  ],
+                  "overnight": true,
+                  "often_delayed_by_over_30_min": true
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 125,
+                  "name": "Istanbul Airport",
+                  "id": "IST"
+                }
+              ],
+              "total_duration": 665,
+              "carbon_emissions": {
+                "this_flight": 495000,
+                "typical_for_this_route": 470000,
+                "difference_percent": 5
+              },
+              "price": 1171,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/TK.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZ3RVU3pZeE9IeFVTemMyTWhvTENMNlNCeEFDR2dOVlUwUTRISEMra2djPSIsW1siQ01OIiwiMjAyNS0xMi0yNSIsIklTVCIsbnVsbCwiVEsiLCI2MTgiXSxbIklTVCIsIjIwMjUtMTItMjYiLCJEWEIiLG51bGwsIlRLIiwiNzYyIl1dXQ=="
+            },
+            {
+              "flights": [
+                {
+                  "departure_airport": {
+                    "name": "Casablanca Mohammed V International Airport",
+                    "id": "CMN",
+                    "time": "2025-12-25 15:30"
+                  },
+                  "arrival_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-26 00:25"
+                  },
+                  "duration": 415,
+                  "airplane": "Airbus A350",
+                  "airline": "Qatar Airways",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+                  "travel_class": "Economy",
+                  "flight_number": "QR 1398",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 388 kg"
+                  ]
+                },
+                {
+                  "departure_airport": {
+                    "name": "Hamad International Airport",
+                    "id": "DOH",
+                    "time": "2025-12-26 01:35"
+                  },
+                  "arrival_airport": {
+                    "name": "Dubai International Airport",
+                    "id": "DXB",
+                    "time": "2025-12-26 03:50"
+                  },
+                  "duration": 75,
+                  "airplane": "Boeing 787",
+                  "airline": "Qatar Airways",
+                  "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+                  "travel_class": "Economy",
+                  "flight_number": "QR 1002",
+                  "legroom": "31 in",
+                  "extensions": [
+                    "Average legroom (31 in)",
+                    "Wi-Fi for a fee",
+                    "In-seat power & USB outlets",
+                    "On-demand video",
+                    "Carbon emissions estimate: 51 kg"
+                  ],
+                  "overnight": true
+                }
+              ],
+              "layovers": [
+                {
+                  "duration": 70,
+                  "name": "Hamad International Airport",
+                  "id": "DOH"
+                }
+              ],
+              "total_duration": 560,
+              "carbon_emissions": {
+                "this_flight": 439000,
+                "typical_for_this_route": 470000,
+                "difference_percent": -7
+              },
+              "price": 1204,
+              "type": "Round trip",
+              "airline_logo": "https://www.gstatic.com/flights/airline_logos/70px/QR.png",
+              "departure_token": "WyJDalJJZGpRMFJIRnRTRGRaZUdkQlRrNDVhR2RDUnkwdExTMHRMUzB0TFMxdmEyeHJOa0ZCUVVGQlIydGZUMm8wUjFNd2FFbEJFZzFSVWpFek9UaDhVVkl4TURBeUdnc0lqcXdIRUFJYUExVlRSRGdjY0k2c0J3PT0iLFtbIkNNTiIsIjIwMjUtMTItMjUiLCJET0giLG51bGwsIlFSIiwiMTM5OCJdLFsiRE9IIiwiMjAyNS0xMi0yNiIsIkRYQiIsbnVsbCwiUVIiLCIxMDAyIl1dXQ=="
+            }
+          ],
+          "price_insights": {
+            "lowest_price": 858,
+            "price_level": "high",
+            "typical_price_range": [
+              640,
+              790
+            ],
+            "price_history": [
+              [
+                1760482800,
+                704
+              ],
+              [
+                1760569200,
+                703
+              ],
+              [
+                1760655600,
+                704
+              ],
+              [
+                1760742000,
+                700
+              ],
+              [
+                1760828400,
+                605
+              ],
+              [
+                1760914800,
+                704
+              ],
+              [
+                1761001200,
+                704
+              ],
+              [
+                1761087600,
+                703
+              ],
+              [
+                1761174000,
+                702
+              ],
+              [
+                1761260400,
+                700
+              ],
+              [
+                1761346800,
+                699
+              ],
+              [
+                1761433200,
+                701
+              ],
+              [
+                1761519600,
+                701
+              ],
+              [
+                1761606000,
+                701
+              ],
+              [
+                1761692400,
+                700
+              ],
+              [
+                1761778800,
+                700
+              ],
+              [
+                1761865200,
+                700
+              ],
+              [
+                1761951600,
+                698
+              ],
+              [
+                1762038000,
+                711
+              ],
+              [
+                1762124400,
+                713
+              ],
+              [
+                1762210800,
+                713
+              ],
+              [
+                1762297200,
+                713
+              ],
+              [
+                1762383600,
+                713
+              ],
+              [
+                1762470000,
+                709
+              ],
+              [
+                1762556400,
+                709
+              ],
+              [
+                1762642800,
+                735
+              ],
+              [
+                1762729200,
+                740
+              ],
+              [
+                1762815600,
+                741
+              ],
+              [
+                1762902000,
+                735
+              ],
+              [
+                1762988400,
+                734
+              ],
+              [
+                1763074800,
+                733
+              ],
+              [
+                1763161200,
+                735
+              ],
+              [
+                1763247600,
+                737
+              ],
+              [
+                1763334000,
+                762
+              ],
+              [
+                1763420400,
+                761
+              ],
+              [
+                1763506800,
+                761
+              ],
+              [
+                1763593200,
+                774
+              ],
+              [
+                1763679600,
+                782
+              ],
+              [
+                1763766000,
+                795
+              ],
+              [
+                1763852400,
+                769
+              ],
+              [
+                1763938800,
+                789
+              ],
+              [
+                1764025200,
+                798
+              ],
+              [
+                1764111600,
+                788
+              ],
+              [
+                1764198000,
+                666
+              ],
+              [
+                1764284400,
+                642
+              ],
+              [
+                1764370800,
+                664
+              ],
+              [
+                1764457200,
+                668
+              ],
+              [
+                1764543600,
+                647
+              ],
+              [
+                1764630000,
+                668
+              ],
+              [
+                1764716400,
+                799
+              ],
+              [
+                1764802800,
+                795
+              ],
+              [
+                1764889200,
+                840
+              ],
+              [
+                1764975600,
+                838
+              ],
+              [
+                1765062000,
+                843
+              ],
+              [
+                1765148400,
+                843
+              ],
+              [
+                1765234800,
+                816
+              ],
+              [
+                1765321200,
+                814
+              ],
+              [
+                1765407600,
+                845
+              ],
+              [
+                1765494000,
+                820
+              ],
+              [
+                1765580400,
+                818
+              ],
+              [
+                1765666800,
+                858
+              ]
+            ]
+          },
+          "airports": [
+            {
+              "departure": [
+                {
+                  "airport": {
+                    "id": "CMN",
+                    "name": "Casablanca Mohammed V International Airport"
+                  },
+                  "city": "Casablanca",
+                  "country": "Morocco",
+                  "country_code": "MA",
+                  "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSqTf5tE7Q5QBtAT00PHJvD2zRcuykr6iD0rJhJfIOZZoNIYZABQRJ7ccpmLehWthx_adFjzDBYXVgo9A",
+                  "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT5OAwW5K0ThVCnmR0G9JcPfDwzidBzSFvRU2EIXCCCK5IHpYDCzVuCNsFVw8ayiniU0vyJTaZJUePC-iItAJ70gU9saNxGP6Xj84wQt1Q"
+                }
+              ],
+              "arrival": [
+                {
+                  "airport": {
+                    "id": "DXB",
+                    "name": "Dubai International Airport"
+                  },
+                  "city": "Dubai",
+                  "country": "United Arab Emirates",
+                  "country_code": "AE",
+                  "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRegWMQBRhDOeg2gvll8nGXsG1-OPqD2V0EvCN1Ni2Poe9hGY8CBps9mRaAyrAz8Jvsvl292aI62fq43A",
+                  "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQDaD8FERvoI4iorjkWbED9zAq7S3m9hD1t5vGNU5Jznr1Kl1em9SIs9c9VkujJF5_EDvC5mKyqcQ9B8PApW9tiwfzhK_pC2qvRBND2Plo"
+                }
+              ]
+            },
+            {
+              "departure": [
+                {
+                  "airport": {
+                    "id": "DXB",
+                    "name": "Dubai International Airport"
+                  },
+                  "city": "Dubai",
+                  "country": "United Arab Emirates",
+                  "country_code": "AE",
+                  "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcRegWMQBRhDOeg2gvll8nGXsG1-OPqD2V0EvCN1Ni2Poe9hGY8CBps9mRaAyrAz8Jvsvl292aI62fq43A",
+                  "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcQDaD8FERvoI4iorjkWbED9zAq7S3m9hD1t5vGNU5Jznr1Kl1em9SIs9c9VkujJF5_EDvC5mKyqcQ9B8PApW9tiwfzhK_pC2qvRBND2Plo"
+                }
+              ],
+              "arrival": [
+                {
+                  "airport": {
+                    "id": "CMN",
+                    "name": "Casablanca Mohammed V International Airport"
+                  },
+                  "city": "Casablanca",
+                  "country": "Morocco",
+                  "country_code": "MA",
+                  "image": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcSqTf5tE7Q5QBtAT00PHJvD2zRcuykr6iD0rJhJfIOZZoNIYZABQRJ7ccpmLehWthx_adFjzDBYXVgo9A",
+                  "thumbnail": "https://encrypted-tbn2.gstatic.com/images?q=tbn:ANd9GcT5OAwW5K0ThVCnmR0G9JcPfDwzidBzSFvRU2EIXCCCK5IHpYDCzVuCNsFVw8ayiniU0vyJTaZJUePC-iItAJ70gU9saNxGP6Xj84wQt1Q"
+                }
+              ]
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "Google_flights search",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        []
+      ]
+    },
+    "Google_flights search": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "ed775b83-fa58-4eaf-ae0c-d4e4012845ad",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e46f983f534b77694bf07dc3ddfe71a2c345b4b36ed094149995e47734b0507d"
+  },
+  "id": "AaPooTLdP6Ey3vMe",
+  "tags": []
+}
