@@ -462,6 +462,15 @@
               "display": true,
               "canBeUsedToMatch": true,
               "type": "string"
+            },
+            {
+              "id": "return_date",
+              "displayName": "return_date",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "canBeUsedToMatch": true,
+              "type": "string"
             }
           ],
           "attemptToConvertTypes": false,
@@ -475,7 +484,7 @@
         -512
       ],
       "id": "bf82be8e-b53b-4035-8b52-dea87fd86082",
-      "name": "Call 'Tool_Get_Flights'"
+      "name": "get_flight_prices"
     }
   ],
   "pinData": {
